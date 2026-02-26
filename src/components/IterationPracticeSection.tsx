@@ -229,6 +229,11 @@ const IterationPracticeSection = () => {
   const epochRows = selectedGateData.result.rows.filter((row) => row.epoch === selectedEpoch);
   const selectedSample = Math.min(selectedSampleByGate[selectedGate], epochRows.length || 1);
   const selectedIteration = epochRows.find((row) => row.sampleIndex === selectedSample) ?? epochRows[0];
+  const epochErrors = epochRows.filter((row) => row.error !== 0).length;
+  const epochHits = epochRows.length - epochErrors;
+  const epochConverged = epochErrors === 0;
+  const epochStartIteration = epochRows[0]?.iteration ?? 0;
+  const epochEndIteration = epochRows[epochRows.length - 1]?.iteration ?? 0;
 
   const previousW1 = selectedIteration.w1 - selectedIteration.deltaW1;
   const previousW2 = selectedIteration.w2 - selectedIteration.deltaW2;
@@ -357,6 +362,38 @@ const IterationPracticeSection = () => {
                 );
               })}
             </div>
+          </div>
+
+          <div className="rounded-md border border-border bg-card p-3 space-y-3">
+            <h6 className="text-xs font-semibold text-foreground">Resumo da época {selectedEpoch}</h6>
+            <p className="text-xs text-muted-foreground">
+              Uma época representa a passagem completa por todas as amostras do conjunto de treino.
+            </p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs font-mono">
+              <div className="rounded-md border border-border bg-secondary/30 px-2.5 py-2">
+                <p className="text-muted-foreground">Amostras</p>
+                <p className="text-foreground font-semibold">{epochRows.length}</p>
+              </div>
+              <div className="rounded-md border border-border bg-secondary/30 px-2.5 py-2">
+                <p className="text-muted-foreground">Acertos</p>
+                <p className="text-emerald-300 font-semibold">{epochHits}</p>
+              </div>
+              <div className="rounded-md border border-border bg-secondary/30 px-2.5 py-2">
+                <p className="text-muted-foreground">Erros</p>
+                <p className="text-amber-300 font-semibold">{epochErrors}</p>
+              </div>
+              <div className="rounded-md border border-border bg-secondary/30 px-2.5 py-2">
+                <p className="text-muted-foreground">Iterações</p>
+                <p className="text-foreground font-semibold">
+                  {epochStartIteration}-{epochEndIteration}
+                </p>
+              </div>
+            </div>
+            <p className={`text-xs ${epochConverged ? "text-emerald-300" : "text-amber-300"}`}>
+              {epochConverged
+                ? "Sem erros nesta época: o Perceptron já estabilizou para esse conjunto."
+                : "Ainda houve erros nesta época: o Perceptron segue ajustando pesos e bias."}
+            </p>
           </div>
 
           <div className="overflow-x-auto rounded-md border border-border">
