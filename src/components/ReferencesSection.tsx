@@ -5,7 +5,7 @@ const references = [
     id: "siqueira-2021",
     content: (
       <>
-        Siqueira, P.H., "Metaheurísticas e Aplicações". Disponível em: {"<"}
+        Siqueira, P.H., &quot;Metaheurísticas e Aplicações&quot;. Disponível em: {"<"}
         <a
           href="https://paulohscwb.github.io/metaheuristicas/"
           target="_blank"
