@@ -24,7 +24,17 @@ describe("CodeExamples", () => {
     const { container, unmount } = render(<CodeExamples />);
 
     click(getByText(container, "Executar", "button"));
+    expect(container.textContent).toContain("=== INICIO DO TREINAMENTO ===");
+    expect(container.textContent).toContain("Resumo epoca");
+    expect(container.textContent).toContain("DeltaW=");
+    expect(container.textContent).toContain("erro absoluto acumulado");
     expect(container.textContent).toContain("Predicoes:");
+
+    click(getByText(container, "Log resumido", "button"));
+    click(getByText(container, "Executar", "button"));
+    expect(container.textContent).toContain("=== INICIO DO TREINAMENTO (RESUMIDO) ===");
+    expect(container.textContent).toContain("EPOCA 1 | erros=");
+    expect(container.textContent).not.toContain("DeltaW=");
 
     await act(async () => {
       click(getByText(container, "Copiar", "button"));
