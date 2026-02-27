@@ -1,6 +1,102 @@
+import type { ReactNode } from "react";
 import { ListOrdered } from "lucide-react";
 
-const AlgorithmSteps = () => {
+interface Props {
+  activationFn: string;
+  theta: number;
+}
+
+const activationLabels: Record<string, string> = {
+  limiar: "Limiar (θ)",
+  step: "Step",
+  sigmoid: "Sigmoid",
+  tanh: "Tanh",
+  relu: "ReLU",
+  gaussian: "Gaussiana",
+};
+
+const getActivationAlgorithm = (activationFn: string, theta: number): ReactNode => {
+  if (activationFn === "limiar") {
+    return (
+      <div className="mt-1 space-y-1 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-node-output font-bold">Se y* &gt; θ ({theta.toFixed(2)})</span>
+          <span className="text-muted-foreground">→</span>
+          <code className="text-primary bg-primary/10 px-2 py-0.5 rounded">y = 1</code>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-node-output font-bold">Se −θ ≤ y* ≤ θ</span>
+          <span className="text-muted-foreground">→</span>
+          <code className="text-primary bg-primary/10 px-2 py-0.5 rounded">y = 0</code>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-node-output font-bold">Se y* &lt; −θ</span>
+          <span className="text-muted-foreground">→</span>
+          <code className="text-primary bg-primary/10 px-2 py-0.5 rounded">y = −1</code>
+        </div>
+      </div>
+    );
+  }
+
+  if (activationFn === "step") {
+    return (
+      <div className="mt-1 space-y-1.5 text-xs">
+        <code className="block text-primary bg-primary/10 px-2 py-1 rounded">
+          y = 1, se y* ≥ 0; caso contrário, y = 0
+        </code>
+        <p className="text-muted-foreground">Algoritmo: compare a soma líquida com zero e produza uma saída binária.</p>
+      </div>
+    );
+  }
+
+  if (activationFn === "sigmoid") {
+    return (
+      <div className="mt-1 space-y-1.5 text-xs">
+        <code className="block text-primary bg-primary/10 px-2 py-1 rounded">
+          y = 1 / (1 + e^(−y*))
+        </code>
+        <p className="text-muted-foreground">Algoritmo: comprima y* continuamente para o intervalo entre 0 e 1.</p>
+      </div>
+    );
+  }
+
+  if (activationFn === "tanh") {
+    return (
+      <div className="mt-1 space-y-1.5 text-xs">
+        <code className="block text-primary bg-primary/10 px-2 py-1 rounded">
+          y = tanh(y*)
+        </code>
+        <p className="text-muted-foreground">Algoritmo: transforma y* em uma saída contínua no intervalo entre −1 e 1.</p>
+      </div>
+    );
+  }
+
+  if (activationFn === "relu") {
+    return (
+      <div className="mt-1 space-y-1.5 text-xs">
+        <code className="block text-primary bg-primary/10 px-2 py-1 rounded">
+          y = max(0, y*)
+        </code>
+        <p className="text-muted-foreground">Algoritmo: zera valores negativos e mantém y* quando ele é positivo.</p>
+      </div>
+    );
+  }
+
+  if (activationFn === "gaussian") {
+    return (
+      <div className="mt-1 space-y-1.5 text-xs">
+        <code className="block text-primary bg-primary/10 px-2 py-1 rounded">
+          y = e^(−(y*)²)
+        </code>
+        <p className="text-muted-foreground">Algoritmo: produz pico em y*=0 e reduz a saída conforme a distância da origem aumenta.</p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const AlgorithmSteps = ({ activationFn, theta }: Props) => {
   return (
     <div className="rounded-xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center gap-2">
@@ -40,24 +136,10 @@ const AlgorithmSteps = () => {
             </Step>
 
             <Step number={4}>
-              <span className="text-muted-foreground">Aplique a função de ativação:</span>
-              <div className="mt-1 space-y-1 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="text-node-output font-bold">Se y* &gt; θ</span>
-                  <span className="text-muted-foreground">→</span>
-                  <code className="text-primary bg-primary/10 px-2 py-0.5 rounded">y = 1</code>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-node-output font-bold">Se −θ ≤ y* ≤ θ</span>
-                  <span className="text-muted-foreground">→</span>
-                  <code className="text-primary bg-primary/10 px-2 py-0.5 rounded">y = 0</code>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-node-output font-bold">Se y* &lt; −θ</span>
-                  <span className="text-muted-foreground">→</span>
-                  <code className="text-primary bg-primary/10 px-2 py-0.5 rounded">y = −1</code>
-                </div>
-              </div>
+              <span className="text-muted-foreground">
+                Aplique a função de ativação atual <strong className="text-foreground">{activationLabels[activationFn] || activationFn}</strong>:
+              </span>
+              {getActivationAlgorithm(activationFn, theta)}
             </Step>
 
             <Step number={5}>
@@ -96,7 +178,7 @@ const AlgorithmSteps = () => {
   );
 };
 
-const Step = ({ number, children }: { number: number; children: React.ReactNode }) => (
+const Step = ({ number, children }: { number: number; children: ReactNode }) => (
   <div className="flex items-start gap-3">
     <span className="shrink-0 w-6 h-6 rounded-md bg-primary/15 text-primary text-xs font-bold flex items-center justify-center mt-0.5">
       {number}

@@ -21,7 +21,11 @@ describe("CodeExamples", () => {
   });
 
   it("executa snippet JS, copia código e alterna linguagem", async () => {
-    const { container, unmount } = render(<CodeExamples />);
+    const { container, unmount } = render(<CodeExamples activationFn="sigmoid" />);
+
+    expect(container.textContent).toContain("Função selecionada no simulador: Sigmoid");
+    expect(container.textContent).toContain("a ativação aplicada no código continua sendo Step");
+    expect(container.textContent).toContain("Funcao aplicada neste codigo de treinamento: Step");
 
     click(getByText(container, "Executar", "button"));
     expect(container.textContent).toContain("=== INICIO DO TREINAMENTO ===");
@@ -41,7 +45,7 @@ describe("CodeExamples", () => {
       await flushMicrotasks();
     });
 
-    expect(writeText).toHaveBeenCalled();
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining("Funcao aplicada neste codigo de treinamento: Step"));
     expect(container.textContent).toContain("Copiado!");
 
     act(() => {

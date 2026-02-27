@@ -3,6 +3,19 @@ import { Check, Code2, Copy, Play, TerminalSquare } from "lucide-react";
 
 type LogMode = "full" | "summary";
 
+interface Props {
+  activationFn: string;
+}
+
+const activationLabels: Record<string, string> = {
+  limiar: "Limiar (θ)",
+  step: "Step",
+  sigmoid: "Sigmoid",
+  tanh: "Tanh",
+  relu: "ReLU",
+  gaussian: "Gaussiana",
+};
+
 const jsFullRunnableSnippet = `const format = (n, digits = 2) => Number(n).toFixed(digits);
 
 function perceptron(X, y, lr = 0.1, epochs = 50) {
@@ -879,7 +892,30 @@ const formatLogArg = (value: unknown) => {
   }
 };
 
-const CodeExamples = () => {
+const commentPrefixByLanguage: Record<string, string> = {
+  Python: "#",
+  JavaScript: "//",
+  TypeScript: "//",
+  Java: "//",
+  "C++": "//",
+  Rust: "//",
+};
+
+const describeActivation = (activationFn: string) => activationLabels[activationFn] || activationFn;
+
+const addActivationHeader = (language: string, snippet: string, activationFn: string) => {
+  const prefix = commentPrefixByLanguage[language] || "//";
+  const selectedActivation = describeActivation(activationFn);
+
+  return [
+    `${prefix} Funcao aplicada neste codigo de treinamento: Step (y = 1 se y* >= 0; caso contrario, y = 0).`,
+    `${prefix} Observacao didatica: os exemplos abaixo mantem a regra classica do Perceptron para facilitar o estudo.`,
+    "",
+    snippet,
+  ].join("\n");
+};
+
+const CodeExamples = ({ activationFn }: Props) => {
   const [activeLang, setActiveLang] = useState("JavaScript");
   const [logMode, setLogMode] = useState<LogMode>("full");
   const [copied, setCopied] = useState(false);
@@ -889,9 +925,11 @@ const CodeExamples = () => {
   const codeSnippets = codeSnippetsByMode[logMode];
   const runnableSnippets = runnableSnippetsByMode[logMode];
   const isRunnable = Boolean(runnableSnippets[activeLang]);
+  const selectedActivation = describeActivation(activationFn);
+  const displayedSnippet = addActivationHeader(activeLang, codeSnippets[activeLang], activationFn);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(codeSnippets[activeLang]);
+    await navigator.clipboard.writeText(displayedSnippet);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -977,6 +1015,20 @@ const CodeExamples = () => {
         ))}
       </div>
 
+      <div className="px-5 pt-4">
+        <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 p-4 space-y-2">
+          <p className="text-sm font-semibold text-sky-200">
+            Função selecionada no simulador: {selectedActivation}
+          </p>
+          <p className="text-xs text-sky-100/90">
+            Nos exemplos abaixo, o código mostra explicitamente a função de ativação usada na implementação.
+          </p>
+          <p className="text-xs text-sky-100/90">
+            Neste bloco de treinamento, a ativação aplicada no código continua sendo <strong>Step</strong>: a saída vale 1 quando y* ≥ 0 e 0 caso contrário.
+          </p>
+        </div>
+      </div>
+
       <div className="px-5 pt-3 flex items-center justify-end gap-2">
         {isRunnable && (
           <button
@@ -1008,7 +1060,7 @@ const CodeExamples = () => {
 
       <div className="mt-3">
         <pre className="overflow-x-auto p-5 pt-4 bg-secondary/30 text-sm font-mono text-foreground leading-relaxed">
-          <code>{codeSnippets[activeLang]}</code>
+          <code>{displayedSnippet}</code>
         </pre>
       </div>
 
