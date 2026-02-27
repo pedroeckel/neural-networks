@@ -12,6 +12,13 @@ Você controla **entradas (x₁, x₂)**, **pesos (w₁, w₂)**, **bias (b)**, 
 Além do diagrama do neurônio, a página também exibe o **cálculo passo a passo**, a **fronteira de decisão**, o **algoritmo de treinamento**, a **prática por iteração**, os **códigos executáveis** e os **exercícios de fundamentos**.`
   },
   {
+    title: "Um pouco da história do Perceptron",
+    icon: Brain,
+    content: `Criado na década de 1950 por **Frank Rosenblatt**, ele foi o primeiro modelo capaz de aprender com exemplos e ajustar seus próprios pesos, uma ideia revolucionária para a época. Sua estrutura imitava o funcionamento básico de um neurônio: entradas, pesos, uma soma e uma decisão.
+
+Parece pouco, mas esse conceito deu origem a tudo que conhecemos hoje como **aprendizado de máquina**.`,
+  },
+  {
     title: "Como o cálculo é feito?",
     icon: Calculator,
     content: `A inferência do neurônio segue este fluxo:
@@ -26,6 +33,19 @@ Além do diagrama do neurônio, a página também exibe o **cálculo passo a pas
    → y = f(y*)
 
 O parâmetro **θ** é usado especificamente na função **Limiar**.`,
+  },
+  {
+    title: "O que são épocas de treinamento?",
+    icon: Calculator,
+    content: `No treinamento do Perceptron, uma **época** é uma passagem completa por todas as amostras do conjunto de treino.
+
+Exemplo: se você tem 4 padrões de entrada, então 1 época = 4 atualizações (uma por padrão).
+
+Ao final de cada época, avaliamos se ainda houve erro:
+- se **não houve erro**, o modelo convergiu;
+- se **houve erro**, iniciamos uma nova época com os pesos já ajustados.
+
+Esse ciclo continua até convergir ou atingir o número máximo de épocas.`,
   },
   {
     title: "Funções de ativação disponíveis",

@@ -12,6 +12,7 @@ import CodeExamples from "@/components/CodeExamples";
 import MainMenu from "@/components/MainMenu";
 import ExercisesSection from "@/components/ExercisesSection";
 import IterationPracticeSection from "@/components/IterationPracticeSection";
+import ReferencesSection from "@/components/ReferencesSection";
 
 const makeActivationFunctions = (theta: number): Record<string, (x: number) => number> => ({
   limiar: (x) => (x > theta ? 1 : x < -theta ? -1 : 0),
@@ -133,6 +134,7 @@ const Index = () => {
               weightedSum={weightedSum}
               output={output}
             />
+            <ReferencesSection />
           </div>
         </div>
       </main>
