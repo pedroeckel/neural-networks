@@ -13,6 +13,7 @@ import MainMenu from "@/components/MainMenu";
 import ExercisesSection from "@/components/ExercisesSection";
 import IterationPracticeSection from "@/components/IterationPracticeSection";
 import ReferencesSection from "@/components/ReferencesSection";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const makeActivationFunctions = (theta: number): Record<string, (x: number) => number> => ({
   limiar: (x) => (x > theta ? 1 : x < -theta ? -1 : 0),
@@ -53,8 +54,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border px-6 py-4">
-        <div className="max-w-7xl mx-auto space-y-4">
+      <header className="border-b border-border px-4 py-4 sm:px-6">
+        <div className="mx-auto w-full max-w-[1400px] space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center glow-primary">
@@ -74,13 +75,13 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-6 space-y-6">
+      <main className="mx-auto w-full max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
         <ConceptPanel />
 
         {/* Main layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+        <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
           {/* Controls */}
-          <aside>
+          <aside className="min-w-0">
             <ControlPanel
               inputs={inputs}
               weights={weights}
@@ -96,35 +97,65 @@ const Index = () => {
           </aside>
 
           {/* Visualization + Steps */}
-          <div className="space-y-6">
-            <div className="rounded-xl border border-border bg-card p-6">
-              <PerceptronVisualization
-                inputs={inputs}
-                weights={weights}
-                bias={bias}
-                weightedSum={weightedSum}
-                output={output}
-                activationFn={activationFn}
-              />
-            </div>
-            <CalculationSteps
-              inputs={inputs}
-              weights={weights}
-              bias={bias}
-              theta={theta}
-              weightedSum={weightedSum}
-              output={output}
-              activationFn={activationFn}
-            />
-            <DecisionBoundaryChart
-              weights={weights}
-              bias={bias}
-              theta={theta}
-              activationFn={activationFn}
-            />
-            <AlgorithmSteps />
-            <IterationPracticeSection />
-            <CodeExamples />
+          <div className="min-w-0 space-y-6">
+            <Tabs defaultValue="simulation" className="min-w-0 overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-6">
+              <div className="flex flex-col gap-4 border-b border-border pb-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="min-w-0 space-y-1">
+                  <p className="text-xs font-semibold text-primary font-mono tracking-[0.24em] uppercase">
+                    Painel Interativo
+                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    Ajuste os parâmetros na esquerda e acompanhe o resultado à direita
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Altere entradas, pesos, bias e ativação para observar a simulação do neurônio ou a mudança da fronteira de decisão.
+                  </p>
+                </div>
+
+                <TabsList className="grid h-auto w-full grid-cols-1 sm:grid-cols-2 lg:max-w-[430px]">
+                  <TabsTrigger value="simulation" className="w-full px-4 py-2 text-xs font-mono uppercase tracking-wide">
+                    Simulação do Neurônio
+                  </TabsTrigger>
+                  <TabsTrigger value="boundary" className="w-full px-4 py-2 text-xs font-mono uppercase tracking-wide">
+                    Fronteira de Decisão
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="simulation" className="space-y-6 pt-6">
+                <div className="rounded-xl border border-border bg-background/40 p-6">
+                  <PerceptronVisualization
+                    inputs={inputs}
+                    weights={weights}
+                    bias={bias}
+                    weightedSum={weightedSum}
+                    output={output}
+                    activationFn={activationFn}
+                  />
+                </div>
+                <CalculationSteps
+                  inputs={inputs}
+                  weights={weights}
+                  bias={bias}
+                  theta={theta}
+                  weightedSum={weightedSum}
+                  output={output}
+                  activationFn={activationFn}
+                />
+              </TabsContent>
+
+              <TabsContent value="boundary" className="pt-6">
+                <DecisionBoundaryChart
+                  weights={weights}
+                  bias={bias}
+                  theta={theta}
+                  activationFn={activationFn}
+                />
+              </TabsContent>
+            </Tabs>
+            <AlgorithmSteps activationFn={activationFn} theta={theta} />
+            <IterationPracticeSection activationFn={activationFn} />
+            <CodeExamples activationFn={activationFn} />
             <ExercisesSection
               inputs={inputs}
               weights={weights}
