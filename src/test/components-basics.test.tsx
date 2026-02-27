@@ -19,6 +19,7 @@ vi.mock("next/link", () => ({
 import MainMenu from "@/components/MainMenu";
 import ConceptPanel from "@/components/ConceptPanel";
 import CalculationSteps from "@/components/CalculationSteps";
+import AlgorithmSteps from "@/components/AlgorithmSteps";
 
 describe("MainMenu", () => {
   it("marca a rota ativa com estilo primário", () => {
@@ -72,6 +73,24 @@ describe("CalculationSteps", () => {
     rerender(<CalculationSteps {...baseProps} weightedSum={0.8} output={1} />);
 
     expect(container.textContent).toContain("> θ → y = 1");
+
+    unmount();
+  });
+});
+
+describe("AlgorithmSteps", () => {
+  it("adapta o passo da ativação conforme a função selecionada", () => {
+    const { container, rerender, unmount } = render(
+      <AlgorithmSteps activationFn="limiar" theta={0.5} />,
+    );
+
+    expect(container.textContent).toContain("Limiar (θ)");
+    expect(container.textContent).toContain("Se y* > θ (0.50)");
+
+    rerender(<AlgorithmSteps activationFn="relu" theta={0.5} />);
+
+    expect(container.textContent).toContain("ReLU");
+    expect(container.textContent).toContain("y = max(0, y*)");
 
     unmount();
   });

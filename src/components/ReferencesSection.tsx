@@ -48,7 +48,7 @@ const ReferencesSection = () => {
         </h3>
       </div>
 
-      <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+      <ol className="space-y-2 break-words text-sm text-muted-foreground list-decimal list-inside">
         {references.map((reference) => (
           <li key={reference.id}>{reference.content}</li>
         ))}

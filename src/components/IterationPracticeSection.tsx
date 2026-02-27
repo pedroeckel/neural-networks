@@ -37,6 +37,10 @@ interface GateSimulationResult {
   finalB: number;
 }
 
+interface Props {
+  activationFn: string;
+}
+
 const LEARNING_RATE = 0.2;
 const ALPHA = 1;
 const THETA = 0;
@@ -56,6 +60,15 @@ const gateDefinitions: GateDefinition[] = [
   { key: "xor", label: "XOR", description: "Saída +1 quando entradas são diferentes.", targets: [-1, 1, 1, -1] },
   { key: "xnor", label: "XNOR", description: "Saída +1 quando entradas são iguais.", targets: [1, -1, -1, 1] },
 ];
+
+const activationLabels: Record<string, string> = {
+  limiar: "Limiar (θ)",
+  step: "Step",
+  sigmoid: "Sigmoid",
+  tanh: "Tanh",
+  relu: "ReLU",
+  gaussian: "Gaussiana",
+};
 
 const format = (value: number, digits = 2) => value.toFixed(digits);
 
@@ -208,7 +221,7 @@ const IterationBoundaryChart = ({ title, w1, w2, b, targets, activeSampleIndex }
   );
 };
 
-const IterationPracticeSection = () => {
+const IterationPracticeSection = ({ activationFn }: Props) => {
   const [selectedGate, setSelectedGate] = useState<GateKey>("and");
   const [selectedEpochByGate, setSelectedEpochByGate] = useState<Record<GateKey, number>>({
     and: 1, or: 1, nand: 1, nor: 1, xor: 1, xnor: 1,
@@ -234,6 +247,7 @@ const IterationPracticeSection = () => {
   const epochConverged = epochErrors === 0;
   const epochStartIteration = epochRows[0]?.iteration ?? 0;
   const epochEndIteration = epochRows[epochRows.length - 1]?.iteration ?? 0;
+  const currentActivationLabel = activationLabels[activationFn] || activationFn;
 
   const previousW1 = selectedIteration.w1 - selectedIteration.deltaW1;
   const previousW2 = selectedIteration.w2 - selectedIteration.deltaW2;
@@ -249,6 +263,18 @@ const IterationPracticeSection = () => {
           </h3>
         </div>
         <p className="text-xs text-muted-foreground">Treino didático do Perceptron com portas lógicas bipolares.</p>
+      </div>
+
+      <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 p-4 space-y-2">
+        <p className="text-sm font-semibold text-sky-200">
+          Função de ativação
+        </p>
+        <p className="text-xs text-sky-100/90">
+          Nesta seção, a prática por iteração continua usando a regra clássica de treino do Perceptron, com saída bipolar e comparação em θ=0.
+        </p>
+        <p className="text-xs text-sky-100/90">
+          Isso foi mantido de propósito para facilitar o aprendizado: primeiro você entende como o Perceptron atualiza pesos e bias passo a passo; depois compara esse comportamento com outras funções de ativação nas demais áreas da página.
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
